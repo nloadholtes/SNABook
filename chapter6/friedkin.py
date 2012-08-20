@@ -15,7 +15,7 @@ import matplotlib.colors as colors
 import random as r
 
 class Person(object):
-    
+
     def __init__(self, id):
         #Start with a single initial preference
         self.id=id
@@ -23,10 +23,10 @@ class Person(object):
         self.a = self.i
         #we value initial opinion and subsequent information equally
         self.alpha=0.9
-    
+
     def __str__(self):
         return(str(self.id))
-        
+
     def step(self):
         #loop through the neighbors and aggregate their preferences
         neighbors=g[self]
@@ -45,7 +45,7 @@ class Influencer(Person):
         self.id=id
         self.i = r.random()
         self.a = 1 ## opinion is strong and immovable
-    
+
     def step(self):
         pass
 
@@ -72,8 +72,8 @@ for i in range(influencers):
     inf=Influencer("Inf"+str(i))
     for x in range(connections):
         g.add_edge(r.choice(g.nodes()), inf)
-    
-            
+
+
 
 col=[n.a for n in g.nodes()]
 pos=net.spring_layout(g)
@@ -83,11 +83,9 @@ plot.figure(2)
 for i in range(time):
     for node in g.nodes():
         node.step()
-    
-    col=[n.a for n in g.nodes()]  
-    print col  
-    plot.plot(col)    
+
+    col=[n.a for n in g.nodes()]
+    print col
+    plot.plot(col)
 plot.figure(i)
 net.draw_networkx(g, pos=pos ,node_color=col, cmap=plot.cm.Reds)
-    
-

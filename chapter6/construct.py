@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # encoding: utf-8
 """
-friedkin.py
+construct.py
 
 Created by Maksim Tsvetovat on 2011-08-08.
 Copyright (c) 2011 __MyCompanyName__. All rights reserved.
@@ -15,7 +15,7 @@ import matplotlib.colors as colors
 import random as r
 
 class Person(object):
-    
+
     def __init__(self, id):
         #Start with a single initial preference
         self.id=id
@@ -23,18 +23,18 @@ class Person(object):
         self.a = self.i
         #we value initial opinion and subsequent information equally
         self.alpha=0.9
-    
+
     def __str__(self):
         return(str(self.id))
-        
+
     def _roulette_choice(self,names,values, inverse=False):
-        """ 
+        """
             roulette method makes unequally weighted choices based on a set of values
             Names and values should be lists of equal lengths
             values are between 0 and 1
-            if inverse=False, names with higher values have a higher probability of being chosen; 
+            if inverse=False, names with higher values have a higher probability of being chosen;
             if inverse=True, names with lower values have hight probability
-            
+
         """
         wheel=names
         for i in range(len(names)):
@@ -43,18 +43,18 @@ class Person(object):
             else:
                 wheel.extend([names[i] for x in range(1+int((1-values[i])*10))])
         return(r.choice(wheel))
-        
+
 
     def interact(self):
         """
             instead of looking at all of the neighbors, let's pick a random node and exchange information with him
             this will create an edge and weigh it with their similarity.
-            
+
             Phase II -- make roulette choice instead of random choice
         """
         neighbors=g[self].keys()
         values=[v['weight'] for v in g[self].values()]
-        
+
         ## roll dice and decide to communicate with similar (0.6), dissimilar(0.3) or random (0.1)
         roll=r.random()
         if r <= 0.1 or len(neighbors)==0:
@@ -63,13 +63,13 @@ class Person(object):
             partner=self._roulette_choice(neighbors,values,inverse=True)
         else:
             partner=self._roulette_choice(neighbors,values,inverse=False)
-        
+
         w=0.5
         s=self.a*w + partner.a*w
         # update my beliefs = initial belief plus sum of all influences
         self.a=(1-self.alpha)*self.i + self.alpha*s
         g.add_edge(self,partner,weight=(1-self.a-partner.a))
-        
+
 
 
 def consensus(g):
@@ -118,13 +118,13 @@ for i in range(runtime):
         data['weight']=data['weight']*(1-decay_rate)
         if data['weight']<0.1: g.remove_edge(f,t)
 
-    col=[n.a for n in g.nodes()] 
-    ew=[1000*edata['weight'] for f,to,edata in g.edges(data=True)]  
+    col=[n.a for n in g.nodes()]
+    ew=[1000*edata['weight'] for f,to,edata in g.edges(data=True)]
     plot.figure(2)
-    plot.plot(col)   
-    
+    plot.plot(col)
+
     cons.append(consensus(g))
- 
+
 plot.figure(i)
 g2=trim_edges(g, weight=0.3)
 col=[n.a for n in g2.nodes()]

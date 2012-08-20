@@ -132,3 +132,4 @@ net.draw_networkx(g2,node_color=col, cmap=plot.cm.Reds) #,edge_color=ew,edge_cma
 
 plot.figure(i+1)
 plot.plot(cons)
+plot.savefig("construct.png")
